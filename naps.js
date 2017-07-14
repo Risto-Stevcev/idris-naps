@@ -8,6 +8,7 @@ var R = require('ramda')
   , globby = require('globby')
 
 var localLibsPath = path.resolve(process.cwd(), 'libs')
+  , localLibs = globby.sync(path.resolve(localLibsPath, '*'))
   , idrisLibsPath = process.env.IDRIS_LIBRARY_PATH || '/usr/share/idris/libs'
   , idrisBinPath = process.env.IDRIS_BINARY_PATH || 'idris'
   , idrisLibs = globby.sync(path.resolve(idrisLibsPath, '*'))
@@ -74,8 +75,7 @@ var installDeps = function() {
     }, {})
 
     sortLibs(libsDeps).forEach(lib => {
-      var localLibs = globby.sync(path.resolve(localLibsPath, '*'))
-        , libPath = path.resolve(process.cwd(), 'bower_components', lib)
+      var libPath = path.resolve(process.cwd(), 'bower_components', lib)
         , includes = R.intersperse('-i', localLibs.concat(idrisLibs).concat(libPath)).join(' ')
         , ipkgPath = path.resolve(process.cwd(), 'bower_components', lib, `${lib}.ipkg`)
 
@@ -90,6 +90,6 @@ var args = process.argv[0].endsWith('node') || process.argv[0].endsWith('nodejs'
 if (args[0] === '--install-deps')
   installDeps()
 else {
-  var includes = R.intersperse('-i', idrisLibs).join(' ')
+  var includes = R.intersperse('-i', localLibs.concat(idrisLibs)).join(' ')
   execSync(`${idrisBinPath} -i ${includes} ${args.join(' ')}`, { cwd: process.cwd(), stdio: [0,1,2], env: env })
 }
