@@ -36,7 +36,8 @@ $ naps --build my-package.ipkg
 $ naps --checkpkg my-package.ipkg
 $ naps --testpkg my-package.ipkg
 ```
-If you need to specify a specific location for the idris binary, populate the `IDRIS_BINARY_PATH` environment variable 
+If you need to specify a specific location for the idris binary, populate the `IDRIS_BINARY_PATH` environment variable. 
+You can only use naps with library packages (library packages have no `executable` metadata in the `ipkg` file).
 
 
 ## How it works
