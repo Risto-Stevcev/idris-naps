@@ -1,6 +1,6 @@
 {
   "name": "idris-naps",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A makeshift package management system for idris",
   "bin": { "naps": "naps.js" },
   "main": "naps.js",
