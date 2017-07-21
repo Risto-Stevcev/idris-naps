@@ -61,6 +61,10 @@ var sortLibs = function(libsDeps) {
   return sortedLibs
 }
 
+var highlight = function(string) {
+  return `\x1b[32m${string}\x1b[0m`
+}
+
 var installDeps = function() {
   checkLocalLibsExists()
 
@@ -78,8 +82,16 @@ var installDeps = function() {
       var libPath = path.resolve(process.cwd(), 'bower_components', lib)
         , includes = R.intersperse('-i', localLibs.concat(idrisLibs).concat(libPath)).join(' ')
         , ipkgPath = path.resolve(process.cwd(), 'bower_components', lib, `${lib}.ipkg`)
+        , command = `${idrisBinPath} -i ${includes} --install ${ipkgPath}`
 
-      execSync(`${idrisBinPath} -i ${includes} --install ${ipkgPath}`, { cwd: libPath, stdio: [0,1,2], env: env })
+      if (process.env.NAPS_DRY_RUN === 'true') {
+        console.log(highlight('Will run:'))
+        console.log(`IDRIS_LIBRARY_PATH=${localLibsPath} ${command}`)
+        console.log(`${highlight('From directory:')}\n${libPath}\n`)
+      }
+      else {
+        execSync(command, { cwd: libPath, stdio: [0,1,2], env: env })
+      }
     })
   })
 }
@@ -91,5 +103,14 @@ if (args[0] === '--install-deps')
   installDeps()
 else {
   var includes = R.intersperse('-i', localLibs.concat(idrisLibs)).join(' ')
-  execSync(`${idrisBinPath} -i ${includes} ${args.join(' ')}`, { cwd: process.cwd(), stdio: [0,1,2], env: env })
+  var command = `${idrisBinPath} -i ${includes} ${args.join(' ')}`
+
+  if (process.env.NAPS_DRY_RUN === 'true') {
+    console.log(highlight('Will run:'))
+    console.log(`IDRIS_LIBRARY_PATH=${localLibsPath} ${command}`)
+    console.log(`${highlight('From directory:')}\n${process.cwd()}\n`)
+  }
+  else {
+    execSync(command, { cwd: process.cwd(), stdio: [0,1,2], env: env })
+  }
 }

@@ -40,6 +40,17 @@ If you need to specify a specific location for the idris binary, populate the `I
 You can only use naps with library packages (library packages have no `executable` metadata in the `ipkg` file).
 
 
+## Dry run
+
+You can see which commands will be run by including the `NAPS_DRY_RUN=true` environment variable as part of the command, 
+which will show you a dry run.
+
+Ex:
+```bash
+$ NAPS_DRY_RUN=true naps --install-deps
+```
+
+
 ## How it works
 
 Naps uses bower to manage packages, much like purescript does. Bower uses a flat dependency tree so it works out well.
